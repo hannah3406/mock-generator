@@ -4,16 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure Mock Generator</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+    
     <style>
-        :root { --primary: #4f46e5; --primary-hover: #4338ca; --bg: #f3f4f6; --text: #1f2937; --success: #10b981; }
-        body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; max-width: 800px; margin: 0 auto; padding: 2rem 1rem; background-color: var(--bg); color: var(--text); line-height: 1.6; }
+        :root { --primary: #4f46e5; --primary-hover: #4338ca; --bg: #f3f4f6; --text: #1f2937; --success: #10b981; --danger: #ef4444; }
+        body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; max-width: 850px; margin: 0 auto; padding: 2rem 1rem; background-color: var(--bg); color: var(--text); line-height: 1.6; }
         
-        .container { background: white; padding: 2.5rem; border-radius: 20px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); }
+        .container { background: white; padding: 2.5rem; border-radius: 20px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
         
         h1 { text-align: center; margin-bottom: 0.5rem; font-size: 2rem; font-weight: 800; color: #111827; }
         .subtitle { text-align: center; color: #6b7280; margin-bottom: 2rem; font-size: 1.05rem; }
-        
-        /* 🛡️ 보안 설명 배너 (친절한 버전) */
+
+        /* 🛡️ 보안 설명 배너 */
         .security-card {
             background: linear-gradient(to right, #eff6ff, #ffffff);
             border: 1px solid #bfdbfe;
@@ -29,123 +31,151 @@
         .security-content p { margin: 0; font-size: 0.95rem; color: #334155; line-height: 1.5; }
         .security-highlight { color: var(--primary); font-weight: 700; background: #e0e7ff; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
 
-        /* 💡 사용법 토글 섹션 */
+        /* 💡 사용법 토글 */
         .guide-toggle { text-align: right; margin-bottom: 1rem; }
         .guide-btn { background: none; border: none; color: #6b7280; cursor: pointer; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 5px; font-weight: 600; }
         .guide-btn:hover { color: var(--primary); }
         
-        .guide-box {
-            background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; display: none; /* 기본 숨김 */
-        }
+        .guide-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; display: none; }
         .guide-box.show { display: block; animation: slideDown 0.3s ease-out; }
         .guide-step { display: flex; gap: 15px; margin-bottom: 1rem; }
         .guide-num { background: #94a3b8; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; margin-top: 3px; }
         .guide-text { font-size: 0.95rem; color: #475569; }
 
-        /* 메인 UI 요소들 */
-        .step-box { border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; transition: 0.2s; }
-        .step-box:hover { border-color: #cbd5e1; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        
-        .label { font-weight: 700; display: block; margin-bottom: 0.5rem; color: #374151; }
-        select, input { width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem; margin-bottom: 1rem; box-sizing: border-box; transition: 0.2s; }
-        select:focus, input:focus { outline: none; border-color: var(--primary); ring: 2px solid var(--primary); }
+        /* 탭 스타일 */
+        .tab-container { display: flex; border-bottom: 2px solid #e5e7eb; margin-bottom: 1.5rem; }
+        .tab-btn { flex: 1; padding: 1rem; border: none; background: none; font-size: 1rem; font-weight: 600; color: #6b7280; cursor: pointer; transition: 0.2s; border-bottom: 3px solid transparent; }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+        .tab-btn:hover:not(.active) { color: #374151; background-color: #f9fafb; }
 
+        /* 입력 영역 */
+        .input-area { display: none; }
+        .input-area.active { display: block; animation: fadeIn 0.3s ease-out; }
+        
+        textarea { width: 100%; height: 200px; padding: 1rem; border: 1px solid #d1d5db; border-radius: 8px; font-family: 'Menlo', monospace; font-size: 0.9rem; resize: vertical; box-sizing: border-box; background-color: #f9fafb; }
+        textarea:focus { outline: none; border-color: var(--primary); ring: 2px solid var(--primary); background-color: #fff; }
+
+        /* 공통 UI */
+        .step-box { border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .label { font-weight: 700; display: block; margin-bottom: 0.5rem; color: #374151; }
+        
+        select, input[type="number"], input[type="file"] { width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem; margin-bottom: 1rem; box-sizing: border-box; }
+        
         button.main-btn { width: 100%; background-color: var(--primary); color: white; padding: 0.9rem; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
         button.main-btn:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
-        button.main-btn:disabled { background-color: #9ca3af; cursor: not-allowed; transform: none; }
+        button.main-btn:disabled { background-color: #9ca3af; cursor: not-allowed; }
 
-        /* 결과창 */
-        pre { background: #111827; color: #f3f4f6; padding: 1.5rem; border-radius: 12px; overflow-y: auto; max-height: 450px; font-size: 0.9rem; font-family: 'Menlo', monospace; border: 1px solid #374151; }
-        pre::-webkit-scrollbar { width: 8px; }
-        pre::-webkit-scrollbar-track { background: #1f2937; }
-        pre::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
+        /* 🌈 Rainbow Syntax Highlighting */
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 1.5rem; border-radius: 12px; overflow-y: auto; max-height: 500px; font-size: 0.9rem; font-family: 'Menlo', 'Monaco', monospace; line-height: 1.5; border: 1px solid #333; }
+        pre::-webkit-scrollbar { width: 10px; }
+        pre::-webkit-scrollbar-track { background: #1e1e1e; }
+        pre::-webkit-scrollbar-thumb { background: #444; border-radius: 5px; }
+        
+        .json-key { color: #9cdcfe; }       /* Key: Sky Blue */
+        .json-string { color: #ce9178; }    /* String: Orange */
+        .json-number { color: #b5cea8; }    /* Number: Green */
+        .json-boolean { color: #569cd6; }   /* Boolean: Blue */
+        .json-null { color: #569cd6; }      /* Null: Blue */
 
         .btn-group { display: flex; gap: 10px; margin-top: 1rem; }
         .sub-btn { flex: 1; padding: 0.8rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .btn-copy { background: #e5e7eb; color: #374151; }
-        .btn-copy:hover { background: #d1d5db; }
         .btn-down { background: var(--success); color: white; }
-        .btn-down:hover { background: #059669; }
         .success-bg { background: #10b981 !important; color: white !important; }
 
         .hidden { display: none; }
-        .warning-text { color: var(--danger); font-size: 0.9rem; margin-top: -0.5rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 5px; font-weight: 500; }
+        .warning-text { color: #ef4444; font-size: 0.9rem; margin-top: -0.5rem; margin-bottom: 1rem; font-weight: 600; display: flex; align-items: center; gap: 5px; }
 
         @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🔒 Secure Mock Generator</h1>
-        <div class="subtitle">안전한 API 목업 생성기</div>
-        
+        <div class="subtitle">팀원들과 함께 쓰는 안전한 API 목업 생성기</div>
+
         <div class="security-card">
             <div class="security-icon">🛡️</div>
             <div class="security-content">
                 <h4>안심하세요, 비즈니스 로직은 전송되지 않습니다!</h4>
                 <p>
-                    여러분이 업로드한 Swagger/OpenAPI 명세서는 AI에게 그대로 전달되지 않습니다.<br>
-                    시스템 내부에서 <span class="security-highlight">Title(제목)</span>, <span class="security-highlight">Description(설명)</span>, <span class="security-highlight">Example(예시)</span> 등 
-                    민감할 수 있는 정보는 <strong>모두 필터링하여 제거</strong>합니다.<br>
+                    시스템 내부에서 <span class="security-highlight">Description(설명)</span>, <span class="security-highlight">Example(예시)</span> 등 
+                    민감 정보는 <strong>모두 필터링하여 제거</strong>합니다.<br>
                     AI에게는 오직 데이터 생성을 위한 <strong>'순수 껍데기(Schema)'</strong> 정보만 전달되므로 보안 걱정 없이 사용하셔도 됩니다.
                 </p>
             </div>
         </div>
 
         <div class="guide-toggle">
-            <button class="guide-btn" onclick="toggleGuide()">
-                💡 처음이신가요? 사용법 보기
-            </button>
+            <button class="guide-btn" onclick="toggleGuide()">💡 처음이신가요? 사용법 보기</button>
         </div>
 
         <div class="guide-box" id="guideBox">
             <div class="guide-step">
                 <div class="guide-num">1</div>
-                <div class="guide-text">가지고 계신 <strong>Swagger/OpenAPI 파일(.json, .yaml)</strong>을 준비합니다.</div>
+                <div class="guide-text"><strong>[Swagger 파일]</strong> 또는 <strong>[JSON 스키마]</strong>를 준비합니다.</div>
             </div>
             <div class="guide-step">
                 <div class="guide-num">2</div>
-                <div class="guide-text">아래 <strong>[명세서 업로드]</strong> 버튼을 눌러 파일을 선택하면 자동으로 분석됩니다.</div>
+                <div class="guide-text">원하는 <strong>API 경로</strong>를 선택하거나 스키마를 직접 입력하세요.</div>
             </div>
             <div class="guide-step">
                 <div class="guide-num">3</div>
-                <div class="guide-text">원하는 <strong>API 경로</strong>를 선택하고, 필요한 <strong>데이터 개수</strong>를 입력하세요.</div>
-            </div>
-            <div class="guide-step">
-                <div class="guide-num">4</div>
                 <div class="guide-text"><strong>[생성하기]</strong> 버튼을 누르면 AI가 한국어 패치된 리얼한 데이터를 만들어줍니다!</div>
             </div>
         </div>
 
-        <div class="step-box">
-            <label class="label">📂 API 명세서 업로드</label>
-            <input type="file" id="fileInput" accept=".json,.yaml,.yml">
-            <button onclick="uploadFile()" id="uploadBtn" class="main-btn">명세서 분석 시작하기</button>
+        <div class="tab-container">
+            <button class="tab-btn active" onclick="switchTab('file')">📂 Swagger 파일 업로드</button>
+            <button class="tab-btn" onclick="switchTab('manual')">📝 JSON 스키마 직접 입력</button>
         </div>
 
-        <div class="step-box hidden" id="step2">
-            <label class="label">🎯 옵션 설정</label>
-            
-            <div style="margin-bottom: 1rem;">
-                <div style="font-size:0.9rem; color:#6b7280; margin-bottom:4px;">API 경로 (Path)</div>
-                <select id="pathSelect" onchange="detectSchemaType()"></select>
+        <div id="file-section" class="input-area active">
+            <div class="step-box">
+                <label class="label">API 명세서 파일 (.json, .yaml)</label>
+                <input type="file" id="fileInput" accept=".json,.yaml,.yml">
+                <button onclick="uploadFile()" id="uploadBtn" class="main-btn">명세서 분석하기</button>
             </div>
+            
+            <div id="path-select-box" class="step-box hidden">
+                <label class="label">API 경로 선택</label>
+                <select id="pathSelect" onchange="detectSchemaFromFile()"></select>
+            </div>
+        </div>
 
+        <div id="manual-section" class="input-area">
+            <div class="step-box">
+                <label class="label">
+                    JSON 스키마 입력
+                    <span style="font-size:0.8rem; color:#6b7280; font-weight:normal;">(type: object 또는 array 형태)</span>
+                </label>
+                <textarea id="manualInput" placeholder='Example:
+{
+  "type": "object",
+  "properties": {
+    "username": { "type": "string" },
+    "age": { "type": "integer" }
+  }
+}' oninput="detectSchemaFromManual()"></textarea>
+            </div>
+        </div>
+
+        <div class="step-box">
+            <label class="label">생성 옵션</label>
             <div style="margin-bottom: 1rem;">
-                <div style="font-size:0.9rem; color:#6b7280; margin-bottom:4px;">필요한 데이터 개수</div>
+                <div style="font-size:0.9rem; color:#6b7280; margin-bottom:4px;">생성 개수</div>
                 <input type="number" id="countInput" value="1" min="1" max="50">
                 <div id="countWarning" class="warning-text hidden">
                     ⚠️ 객체(Object) 타입은 구조상 1개만 생성됩니다.
                 </div>
             </div>
-
-            <button onclick="generateData()" id="genBtn" class="main-btn">✨ AI로 목업 데이터 생성하기</button>
+            <button onclick="generateData()" id="genBtn" class="main-btn" disabled>✨ AI로 목업 데이터 생성하기</button>
         </div>
 
-        <div class="step-box hidden" id="resultArea">
+        <div id="resultArea" class="step-box hidden">
             <label class="label">📦 생성 결과</label>
-            <pre id="jsonOutput">데이터를 기다리는 중...</pre>
-            
+            <pre id="jsonOutput"></pre>
             <div class="btn-group">
                 <button onclick="copyToClipboard()" id="copyBtn" class="sub-btn btn-copy">📋 클립보드 복사</button>
                 <button onclick="downloadJson()" class="sub-btn btn-down">💾 JSON 다운로드</button>
@@ -154,15 +184,30 @@
     </div>
 
     <script>
-        // 토글 기능
-        function toggleGuide() {
-            const box = document.getElementById('guideBox');
-            box.classList.toggle('show');
-        }
-
-        // --- 기존 로직 유지 ---
+        // --- 기능 로직 ---
+        let currentMode = 'file';
         let fullSpec = null;
         let currentSchema = null;
+        let rawJsonText = "";
+
+        function toggleGuide() {
+            document.getElementById('guideBox').classList.toggle('show');
+        }
+
+        function switchTab(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.input-area').forEach(area => area.classList.remove('active'));
+
+            if (mode === 'file') {
+                document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
+                document.getElementById('file-section').classList.add('active');
+            } else {
+                document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
+                document.getElementById('manual-section').classList.add('active');
+            }
+            validateForm();
+        }
 
         async function uploadFile() {
             const file = document.getElementById('fileInput').files[0];
@@ -170,7 +215,7 @@
             
             const btn = document.getElementById('uploadBtn');
             const originalText = btn.innerText;
-            btn.innerText = "🔄 분석 중입니다...";
+            btn.innerText = "🔄 분석 중...";
             btn.disabled = true;
 
             const formData = new FormData();
@@ -192,18 +237,18 @@
                     select.appendChild(option);
                 });
 
-                document.getElementById('step2').classList.remove('hidden');
-                detectSchemaType(); 
+                document.getElementById('path-select-box').classList.remove('hidden');
+                detectSchemaFromFile(); 
 
             } catch (e) {
-                alert("오류 발생: " + e.message);
+                alert("오류: " + e.message);
             } finally {
                 btn.innerText = originalText;
                 btn.disabled = false;
             }
         }
 
-        function detectSchemaType() {
+        function detectSchemaFromFile() {
             const path = document.getElementById('pathSelect').value;
             if(!path || !fullSpec) return;
 
@@ -216,10 +261,22 @@
             if (successRes?.content?.['application/json']?.schema) {
                 schema = successRes.content['application/json'].schema;
             }
+            updateSchemaState(schema);
+        }
 
+        function detectSchemaFromManual() {
+            const text = document.getElementById('manualInput').value;
+            try {
+                const schema = JSON.parse(text);
+                updateSchemaState(schema);
+            } catch (e) {
+                document.getElementById('genBtn').disabled = true;
+            }
+        }
+
+        function updateSchemaState(schema) {
             currentSchema = schema;
             const isArray = schema.type === 'array';
-
             const countInput = document.getElementById('countInput');
             const warning = document.getElementById('countWarning');
 
@@ -231,21 +288,41 @@
                 countInput.disabled = true;
                 warning.classList.remove('hidden');
             }
+            validateForm();
+        }
+
+        function validateForm() {
+            const btn = document.getElementById('genBtn');
+            if (currentMode === 'file') {
+                btn.disabled = !currentSchema;
+            } else {
+                try {
+                    JSON.parse(document.getElementById('manualInput').value);
+                    btn.disabled = false;
+                } catch(e) {
+                    btn.disabled = true;
+                }
+            }
         }
 
         async function generateData() {
-            const path = document.getElementById('pathSelect').value;
-            const method = Object.keys(fullSpec.paths[path])[0];
             const count = parseInt(document.getElementById('countInput').value) || 1;
+            let path = "Manual_Input";
+            let method = "POST";
+
+            if (currentMode === 'file') {
+                path = document.getElementById('pathSelect').value;
+                method = Object.keys(fullSpec.paths[path])[0];
+            }
 
             const btn = document.getElementById('genBtn');
             const output = document.getElementById('jsonOutput');
             
             btn.disabled = true;
-            btn.innerText = "🤖 AI가 열심히 데이터를 만들고 있습니다...";
+            btn.innerText = "🤖 AI가 데이터를 굽는 중...";
             document.getElementById('resultArea').classList.remove('hidden');
-            
-            // 스크롤 이동
+            output.innerHTML = '<span style="color:#aaa">⏳ 잠시만 기다려주세요...</span>';
+
             setTimeout(() => {
                 document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
             }, 100);
@@ -259,7 +336,10 @@
                 const json = await res.json();
                 
                 if(json.error) throw new Error(json.error);
-                output.innerText = JSON.stringify(json, null, 2);
+                
+                rawJsonText = JSON.stringify(json, null, 2);
+                output.innerHTML = syntaxHighlight(rawJsonText);
+
             } catch (e) {
                 output.innerText = "❌ 실패: " + e.message;
             } finally {
@@ -268,29 +348,37 @@
             }
         }
 
-        async function copyToClipboard() {
-            const text = document.getElementById('jsonOutput').innerText;
-            if (!text) return;
+        function syntaxHighlight(json) {
+            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                let cls = 'json-number';
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) { cls = 'json-key'; } 
+                    else { cls = 'json-string'; }
+                } else if (/true|false/.test(match)) { cls = 'json-boolean'; }
+                else if (/null/.test(match)) { cls = 'json-null'; }
+                return '<span class="' + cls + '">' + match + '</span>';
+            });
+        }
 
+        async function copyToClipboard() {
+            if (!rawJsonText) return;
             try {
-                await navigator.clipboard.writeText(text);
+                await navigator.clipboard.writeText(rawJsonText);
                 const btn = document.getElementById('copyBtn');
                 const originalText = btn.innerText;
                 btn.innerText = "✅ 복사 완료!";
                 btn.classList.add('success-bg');
-
                 setTimeout(() => {
                     btn.innerText = originalText;
                     btn.classList.remove('success-bg');
                 }, 2000);
-            } catch (err) {
-                alert('복사 실패');
-            }
+            } catch (err) { alert('복사 실패'); }
         }
 
         function downloadJson() {
-            const text = document.getElementById('jsonOutput').innerText;
-            const blob = new Blob([text], { type: "application/json" });
+            if (!rawJsonText) return;
+            const blob = new Blob([rawJsonText], { type: "application/json" });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
             link.download = "mock_data.json";
