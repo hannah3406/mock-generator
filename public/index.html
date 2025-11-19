@@ -384,6 +384,11 @@
             link.download = "mock_data.json";
             link.click();
         }
+        // ⏰ [Wake Up] 서버가 잠들지 않게 10분마다 찌르기
+        setInterval(() => {
+            console.log("⏰ Keeping the server awake...");
+            fetch('/health').catch(err => console.log("Wake up error:", err));
+        }, 10 * 60 * 1000);
     </script>
 </body>
 </html>

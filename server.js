@@ -8,6 +8,9 @@ const fs = require('fs');
 
 const app = express();
 
+app.get('/health', (req, res) => {
+    res.send('I am awake!');
+});
 // [Render 배포용 수정] 업로드 폴더가 없으면 자동 생성
 const uploadDir = 'uploads';
 if (!fs.existsSync(uploadDir)){
