@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  mock-app:
+    build: .
+    ports:
+      - "3000:3000"
+    # 로컬에 있는 .env 파일을 컨테이너 안으로 전달
+    env_file:
+      - .env
