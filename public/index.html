@@ -7,7 +7,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
     
     <style>
-        :root { --primary: #4f46e5; --primary-hover: #4338ca; --bg: #f3f4f6; --text: #1f2937; --success: #10b981; --danger: #ef4444; }
+        :root { --primary: #4f46e5; --primary-hover: #4338ca; --bg: #f3f4f6; --text: #1f2937; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; }
         body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; max-width: 850px; margin: 0 auto; padding: 2rem 1rem; background-color: var(--bg); color: var(--text); line-height: 1.6; }
         
         .container { background: white; padding: 2.5rem; border-radius: 20px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
@@ -15,13 +15,13 @@
         h1 { text-align: center; margin-bottom: 0.5rem; font-size: 2rem; font-weight: 800; color: #111827; }
         .subtitle { text-align: center; color: #6b7280; margin-bottom: 2rem; font-size: 1.05rem; }
 
-        /* 🛡️ 보안 설명 배너 */
+        /* 🛡️ 보안 설명 배너 (복구됨) */
         .security-card {
             background: linear-gradient(to right, #eff6ff, #ffffff);
             border: 1px solid #bfdbfe;
             border-radius: 12px;
             padding: 1.5rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             display: flex;
             gap: 15px;
             align-items: start;
@@ -31,69 +31,71 @@
         .security-content p { margin: 0; font-size: 0.95rem; color: #334155; line-height: 1.5; }
         .security-highlight { color: var(--primary); font-weight: 700; background: #e0e7ff; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
 
-        /* 💡 사용법 토글 */
-        .guide-toggle { text-align: right; margin-bottom: 1rem; }
-        .guide-btn { background: none; border: none; color: #6b7280; cursor: pointer; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 5px; font-weight: 600; }
-        .guide-btn:hover { color: var(--primary); }
+        /* 💡 꿀팁 토글 */
+        .tip-toggle { text-align: right; margin-bottom: 10px; }
+        .tip-btn { background: none; border: none; color: #6b7280; cursor: pointer; font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
+        .tip-btn:hover { color: var(--primary); }
         
-        .guide-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; display: none; }
-        .guide-box.show { display: block; animation: slideDown 0.3s ease-out; }
-        .guide-step { display: flex; gap: 15px; margin-bottom: 1rem; }
-        .guide-num { background: #94a3b8; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; margin-top: 3px; }
-        .guide-text { font-size: 0.95rem; color: #475569; }
+        .tip-box { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; display: none; }
+        .tip-box.show { display: block; animation: fadeIn 0.3s; }
+        .tip-item { margin-bottom: 1rem; border-bottom: 1px dashed #fcd34d; padding-bottom: 1rem; }
+        .tip-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .tip-title { font-weight: 700; color: #92400e; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px; }
+        .tip-content { font-size: 0.9rem; color: #78350f; line-height: 1.5; }
+        .code-snippet { background: rgba(255,255,255,0.6); padding: 2px 6px; border-radius: 4px; font-family: monospace; font-weight: bold; }
 
         /* 탭 스타일 */
         .tab-container { display: flex; border-bottom: 2px solid #e5e7eb; margin-bottom: 1.5rem; }
-        .tab-btn { flex: 1; padding: 1rem; border: none; background: none; font-size: 1rem; font-weight: 600; color: #6b7280; cursor: pointer; transition: 0.2s; border-bottom: 3px solid transparent; }
-        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
-        .tab-btn:hover:not(.active) { color: #374151; background-color: #f9fafb; }
+        .tab-btn { flex: 1; padding: 1rem; border: none; background: none; font-size: 1rem; font-weight: 700; color: #9ca3af; cursor: pointer; transition: 0.2s; border-bottom: 3px solid transparent; }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: #eff6ff; }
+        .tab-btn:hover:not(.active) { color: #4b5563; background-color: #f9fafb; }
 
         /* 입력 영역 */
         .input-area { display: none; }
         .input-area.active { display: block; animation: fadeIn 0.3s ease-out; }
         
-        textarea { width: 100%; height: 200px; padding: 1rem; border: 1px solid #d1d5db; border-radius: 8px; font-family: 'Menlo', monospace; font-size: 0.9rem; resize: vertical; box-sizing: border-box; background-color: #f9fafb; }
+        textarea { width: 100%; height: 250px; padding: 1rem; border: 1px solid #d1d5db; border-radius: 8px; font-family: 'Menlo', monospace; font-size: 0.85rem; resize: vertical; box-sizing: border-box; background-color: #f8fafc; line-height: 1.4; }
         textarea:focus { outline: none; border-color: var(--primary); ring: 2px solid var(--primary); background-color: #fff; }
+
+        /* 경고 박스 */
+        .warning-box { background: #fef2f2; border: 1px solid #fecaca; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem; color: #991b1b; display: flex; gap: 10px; align-items: center; }
 
         /* 공통 UI */
         .step-box { border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
         .label { font-weight: 700; display: block; margin-bottom: 0.5rem; color: #374151; }
         
-        select, input[type="number"], input[type="file"] { width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem; margin-bottom: 1rem; box-sizing: border-box; }
+        select, input[type="number"], input[type="file"] { width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem; margin-bottom: 0.5rem; box-sizing: border-box; transition: 0.2s; }
+        select:focus, input:focus { outline: none; border-color: var(--primary); ring: 2px solid var(--primary); }
+        
+        .helper-text { font-size: 0.85rem; color: #6b7280; margin-bottom: 0; margin-top: 4px; }
         
         button.main-btn { width: 100%; background-color: var(--primary); color: white; padding: 0.9rem; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
         button.main-btn:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
-        button.main-btn:disabled { background-color: #9ca3af; cursor: not-allowed; }
+        button.main-btn:disabled { background-color: #9ca3af; cursor: not-allowed; transform: none; }
 
-        /* 🌈 Rainbow Syntax Highlighting */
+        /* Rainbow Syntax */
         pre { background: #1e1e1e; color: #d4d4d4; padding: 1.5rem; border-radius: 12px; overflow-y: auto; max-height: 500px; font-size: 0.9rem; font-family: 'Menlo', 'Monaco', monospace; line-height: 1.5; border: 1px solid #333; }
         pre::-webkit-scrollbar { width: 10px; }
         pre::-webkit-scrollbar-track { background: #1e1e1e; }
         pre::-webkit-scrollbar-thumb { background: #444; border-radius: 5px; }
-        
-        .json-key { color: #9cdcfe; }       /* Key: Sky Blue */
-        .json-string { color: #ce9178; }    /* String: Orange */
-        .json-number { color: #b5cea8; }    /* Number: Green */
-        .json-boolean { color: #569cd6; }   /* Boolean: Blue */
-        .json-null { color: #569cd6; }      /* Null: Blue */
+        .json-key { color: #9cdcfe; } .json-string { color: #ce9178; } .json-number { color: #b5cea8; } .json-boolean { color: #569cd6; } .json-null { color: #569cd6; }
 
         .btn-group { display: flex; gap: 10px; margin-top: 1rem; }
         .sub-btn { flex: 1; padding: 0.8rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .btn-copy { background: #e5e7eb; color: #374151; }
+        .btn-copy:hover { background: #d1d5db; }
         .btn-down { background: var(--success); color: white; }
+        .btn-down:hover { background: #059669; }
         .success-bg { background: #10b981 !important; color: white !important; }
 
         .hidden { display: none; }
-        .warning-text { color: #ef4444; font-size: 0.9rem; margin-top: -0.5rem; margin-bottom: 1rem; font-weight: 600; display: flex; align-items: center; gap: 5px; }
-
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🔒 Secure Mock Generator</h1>
-        <div class="subtitle">팀원들과 함께 쓰는 안전한 API 목업 생성기</div>
+        <div class="subtitle">안전한 API 목업 생성기</div>
 
         <div class="security-card">
             <div class="security-icon">🛡️</div>
@@ -107,31 +109,47 @@
             </div>
         </div>
 
-        <div class="guide-toggle">
-            <button class="guide-btn" onclick="toggleGuide()">💡 처음이신가요? 사용법 보기</button>
+        <div class="tip-toggle">
+            <button class="tip-btn" onclick="toggleTip()">💡 사용 꿀팁 & Swagger JSON 다운법</button>
         </div>
 
-        <div class="guide-box" id="guideBox">
-            <div class="guide-step">
-                <div class="guide-num">1</div>
-                <div class="guide-text"><strong>[Swagger 파일]</strong> 또는 <strong>[JSON 스키마]</strong>를 준비합니다.</div>
+        <div class="tip-box" id="tipBox">
+            <div class="tip-item">
+                <div class="tip-title">📝 Swagger에서 JSON(Example) 복사하는 법</div>
+                <div class="tip-content">
+                    Swagger UI에서 API를 클릭한 후, <strong>Responses</strong> 섹션의 <strong>Example Value</strong>에 있는 JSON을 드래그해서 복사하세요.<br>
+                    복잡한 스키마 파일 전체보다, 필요한 부분만 복사해서 [직접 입력] 하는 것이 훨씬 빠릅니다!
+                </div>
             </div>
-            <div class="guide-step">
-                <div class="guide-num">2</div>
-                <div class="guide-text">원하는 <strong>API 경로</strong>를 선택하거나 스키마를 직접 입력하세요.</div>
-            </div>
-            <div class="guide-step">
-                <div class="guide-num">3</div>
-                <div class="guide-text"><strong>[생성하기]</strong> 버튼을 누르면 AI가 한국어 패치된 리얼한 데이터를 만들어줍니다!</div>
+            <div class="tip-item">
+                <div class="tip-title">💾 Swagger JSON 파일 다운로드하는 법</div>
+                <div class="tip-content">
+                    Swagger 페이지 상단 제목 바로 아래에 작은 링크 <span class="code-snippet">/v3/api-docs</span> 또는 <span class="code-snippet">swagger.json</span> 링크가 있습니다.<br>
+                    해당 링크를 클릭하면 원본 JSON이 나옵니다. <strong>[다른 이름으로 저장]</strong> 해서 업로드하세요.
+                </div>
             </div>
         </div>
 
         <div class="tab-container">
-            <button class="tab-btn active" onclick="switchTab('file')">📂 Swagger 파일 업로드</button>
-            <button class="tab-btn" onclick="switchTab('manual')">📝 JSON 스키마 직접 입력</button>
+            <button class="tab-btn active" onclick="switchTab('manual')">📝 JSON 직접 입력 (추천)</button>
+            <button class="tab-btn" onclick="switchTab('file')">📂 Swagger 파일 업로드</button>
         </div>
 
-        <div id="file-section" class="input-area active">
+        <div id="manual-section" class="input-area active">
+            <div class="step-box">
+                <label class="label">
+                    JSON 데이터/스키마 붙여넣기
+                </label>
+                <textarea id="manualInput" placeholder='Swagger의 "Example Value"를 복사해서 붙여넣으세요.&#13;&#10;예시:&#13;&#10;{&#13;&#10;  "status": "OK",&#13;&#10;  "couponList": [ ... ]&#13;&#10;}' oninput="detectSchemaFromManual()"></textarea>
+                <div class="helper-text">※ 객체({...})를 넣으면 내부 배열을 채워주고, 배열([...])을 넣으면 리스트를 만들어줍니다.</div>
+            </div>
+        </div>
+
+        <div id="file-section" class="input-area">
+            <div class="warning-box">
+                <span>⚠️ <strong>주의:</strong> 통파일 업로드 시 원치 않는 대량의 데이터가 생성될 수 있습니다.<br>특정 API만 테스트하려면 <strong>[직접 입력]</strong> 탭을 권장합니다.</span>
+            </div>
+
             <div class="step-box">
                 <label class="label">API 명세서 파일 (.json, .yaml)</label>
                 <input type="file" id="fileInput" accept=".json,.yaml,.yml">
@@ -144,38 +162,27 @@
             </div>
         </div>
 
-        <div id="manual-section" class="input-area">
-            <div class="step-box">
-                <label class="label">
-                    JSON 스키마 입력
-                    <span style="font-size:0.8rem; color:#6b7280; font-weight:normal;">(type: object 또는 array 형태)</span>
-                </label>
-                <textarea id="manualInput" placeholder='Example:
-{
-  "type": "object",
-  "properties": {
-    "username": { "type": "string" },
-    "age": { "type": "integer" }
-  }
-}' oninput="detectSchemaFromManual()"></textarea>
-            </div>
-        </div>
-
         <div class="step-box">
             <label class="label">생성 옵션</label>
-            <div style="margin-bottom: 1rem;">
-                <div style="font-size:0.9rem; color:#6b7280; margin-bottom:4px;">생성 개수</div>
-                <input type="number" id="countInput" value="1" min="1" max="50">
-                <div id="countWarning" class="warning-text hidden">
-                    ⚠️ 객체(Object) 타입은 구조상 1개만 생성됩니다.
+            
+            <div style="margin-bottom: 1.5rem;">
+                <div id="countLabel" style="font-size:0.95rem; font-weight:700; color:#374151;">
+                    배열 생성 개수
+                </div>
+                <input type="number" id="countInput" value="5" min="1" max="50">
+                
+                <div id="countDesc" class="helper-text">
+                    배열에 대한 카운트 수를 설정할 수 있습니다.
                 </div>
             </div>
+
             <button onclick="generateData()" id="genBtn" class="main-btn" disabled>✨ AI로 목업 데이터 생성하기</button>
         </div>
 
         <div id="resultArea" class="step-box hidden">
             <label class="label">📦 생성 결과</label>
             <pre id="jsonOutput"></pre>
+            
             <div class="btn-group">
                 <button onclick="copyToClipboard()" id="copyBtn" class="sub-btn btn-copy">📋 클립보드 복사</button>
                 <button onclick="downloadJson()" class="sub-btn btn-down">💾 JSON 다운로드</button>
@@ -184,84 +191,53 @@
     </div>
 
     <script>
-        // --- 기능 로직 ---
-        let currentMode = 'file';
+        let currentMode = 'manual';
         let fullSpec = null;
         let currentSchema = null;
         let rawJsonText = "";
 
-        function toggleGuide() {
-            document.getElementById('guideBox').classList.toggle('show');
+        // 팁 토글
+        function toggleTip() {
+            document.getElementById('tipBox').classList.toggle('show');
         }
 
+        // 탭 전환
         function switchTab(mode) {
             currentMode = mode;
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.input-area').forEach(area => area.classList.remove('active'));
 
-            if (mode === 'file') {
+            if (mode === 'manual') {
                 document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
-                document.getElementById('file-section').classList.add('active');
+                document.getElementById('manual-section').classList.add('active');
             } else {
                 document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
-                document.getElementById('manual-section').classList.add('active');
+                document.getElementById('file-section').classList.add('active');
             }
             validateForm();
         }
 
-        async function uploadFile() {
-            const file = document.getElementById('fileInput').files[0];
-            if (!file) return alert("파일을 선택해주세요!");
+        // 🧠 스마트 UI 업데이트 (요청하신 문구 반영)
+        function updateSchemaState(schema) {
+            currentSchema = schema;
+            const countLabel = document.getElementById('countLabel');
+            const countDesc = document.getElementById('countDesc');
             
-            const btn = document.getElementById('uploadBtn');
-            const originalText = btn.innerText;
-            btn.innerText = "🔄 분석 중...";
-            btn.disabled = true;
+            // 배열 여부 판단
+            let isArray = false;
+            if (schema.type === 'array') isArray = true;
+            if (Array.isArray(schema)) isArray = true;
 
-            const formData = new FormData();
-            formData.append('specFile', file);
-
-            try {
-                const res = await fetch('/api/parse', { method: 'POST', body: formData });
-                const data = await res.json();
-                if(data.error) throw new Error(data.error);
-
-                fullSpec = data.spec;
-                const select = document.getElementById('pathSelect');
-                select.innerHTML = '';
-                
-                data.paths.forEach(path => {
-                    const option = document.createElement('option');
-                    option.value = path;
-                    option.text = path;
-                    select.appendChild(option);
-                });
-
-                document.getElementById('path-select-box').classList.remove('hidden');
-                detectSchemaFromFile(); 
-
-            } catch (e) {
-                alert("오류: " + e.message);
-            } finally {
-                btn.innerText = originalText;
-                btn.disabled = false;
+            if (isArray) {
+                // 배열일 때
+                countLabel.innerText = "배열 생성 개수";
+                countDesc.innerText = "생성할 리스트(Array)의 아이템 개수를 설정할 수 있습니다.";
+            } else {
+                // 객체일 때 (내부 리스트용)
+                countLabel.innerText = "내부 리스트 데이터 개수";
+                countDesc.innerText = "객체(Object)는 1개만 생성되며, 내부에 포함된 배열(List)의 데이터 개수를 설정할 수 있습니다.";
             }
-        }
-
-        function detectSchemaFromFile() {
-            const path = document.getElementById('pathSelect').value;
-            if(!path || !fullSpec) return;
-
-            const methods = fullSpec.paths[path];
-            const method = Object.keys(methods)[0];
-            const responses = methods[method].responses;
-            const successRes = responses['200'] || responses['201'] || Object.values(responses)[0];
-            
-            let schema = {};
-            if (successRes?.content?.['application/json']?.schema) {
-                schema = successRes.content['application/json'].schema;
-            }
-            updateSchemaState(schema);
+            validateForm();
         }
 
         function detectSchemaFromManual() {
@@ -269,47 +245,60 @@
             try {
                 const schema = JSON.parse(text);
                 updateSchemaState(schema);
+                document.getElementById('genBtn').disabled = false;
             } catch (e) {
                 document.getElementById('genBtn').disabled = true;
             }
         }
 
-        function updateSchemaState(schema) {
-            currentSchema = schema;
-            const isArray = schema.type === 'array';
-            const countInput = document.getElementById('countInput');
-            const warning = document.getElementById('countWarning');
+        async function uploadFile() {
+            const file = document.getElementById('fileInput').files[0];
+            if (!file) return alert("파일을 선택해주세요!");
+            const btn = document.getElementById('uploadBtn');
+            const orgText = btn.innerText;
+            btn.innerText = "🔄 분석 중..."; btn.disabled = true;
+            const formData = new FormData(); formData.append('specFile', file);
 
-            if (isArray) {
-                countInput.disabled = false;
-                warning.classList.add('hidden');
-            } else {
-                countInput.value = 1;
-                countInput.disabled = true;
-                warning.classList.remove('hidden');
+            try {
+                const res = await fetch('/api/parse', { method: 'POST', body: formData });
+                const data = await res.json();
+                if(data.error) throw new Error(data.error);
+                fullSpec = data.spec;
+                const select = document.getElementById('pathSelect'); select.innerHTML = '';
+                data.paths.forEach(path => {
+                    const option = document.createElement('option'); option.value = path; option.text = path; select.appendChild(option);
+                });
+                document.getElementById('path-select-box').classList.remove('hidden');
+                detectSchemaFromFile();
+            } catch (e) { alert("오류: " + e.message); } 
+            finally { btn.innerText = orgText; btn.disabled = false; }
+        }
+
+        function detectSchemaFromFile() {
+            const path = document.getElementById('pathSelect').value;
+            if(!path || !fullSpec) return;
+            const method = Object.keys(fullSpec.paths[path])[0];
+            const responses = fullSpec.paths[path][method].responses;
+            const successRes = responses['200'] || responses['201'] || Object.values(responses)[0];
+            let schema = {};
+            if (successRes?.content?.['application/json']?.schema) {
+                schema = successRes.content['application/json'].schema;
             }
-            validateForm();
+            updateSchemaState(schema);
         }
 
         function validateForm() {
             const btn = document.getElementById('genBtn');
-            if (currentMode === 'file') {
-                btn.disabled = !currentSchema;
-            } else {
-                try {
-                    JSON.parse(document.getElementById('manualInput').value);
-                    btn.disabled = false;
-                } catch(e) {
-                    btn.disabled = true;
-                }
+            if (currentMode === 'file') btn.disabled = !currentSchema;
+            else {
+                try { JSON.parse(document.getElementById('manualInput').value); btn.disabled = false; } 
+                catch(e) { btn.disabled = true; }
             }
         }
 
         async function generateData() {
             const count = parseInt(document.getElementById('countInput').value) || 1;
-            let path = "Manual_Input";
-            let method = "POST";
-
+            let path = "Manual_Input"; let method = "POST";
             if (currentMode === 'file') {
                 path = document.getElementById('pathSelect').value;
                 method = Object.keys(fullSpec.paths[path])[0];
@@ -317,15 +306,10 @@
 
             const btn = document.getElementById('genBtn');
             const output = document.getElementById('jsonOutput');
-            
-            btn.disabled = true;
-            btn.innerText = "🤖 AI가 데이터를 굽는 중...";
+            btn.disabled = true; btn.innerText = "🤖 AI가 데이터를 생성 중입니다...";
             document.getElementById('resultArea').classList.remove('hidden');
             output.innerHTML = '<span style="color:#aaa">⏳ 잠시만 기다려주세요...</span>';
-
-            setTimeout(() => {
-                document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
-            }, 100);
+            setTimeout(() => document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' }), 100);
 
             try {
                 const res = await fetch('/api/generate', {
@@ -334,18 +318,11 @@
                     body: JSON.stringify({ path, method, specSchema: currentSchema, count })
                 });
                 const json = await res.json();
-                
                 if(json.error) throw new Error(json.error);
-                
                 rawJsonText = JSON.stringify(json, null, 2);
                 output.innerHTML = syntaxHighlight(rawJsonText);
-
-            } catch (e) {
-                output.innerText = "❌ 실패: " + e.message;
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "✨ AI로 목업 데이터 생성하기";
-            }
+            } catch (e) { output.innerText = "❌ 실패: " + e.message; } 
+            finally { btn.disabled = false; btn.innerText = "✨ AI로 목업 데이터 생성하기"; }
         }
 
         function syntaxHighlight(json) {
@@ -353,42 +330,20 @@
             return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
                 let cls = 'json-number';
                 if (/^"/.test(match)) {
-                    if (/:$/.test(match)) { cls = 'json-key'; } 
-                    else { cls = 'json-string'; }
-                } else if (/true|false/.test(match)) { cls = 'json-boolean'; }
-                else if (/null/.test(match)) { cls = 'json-null'; }
+                    if (/:$/.test(match)) { cls = 'json-key'; } else { cls = 'json-string'; }
+                } else if (/true|false/.test(match)) { cls = 'json-boolean'; } else if (/null/.test(match)) { cls = 'json-null'; }
                 return '<span class="' + cls + '">' + match + '</span>';
             });
         }
-
-        async function copyToClipboard() {
-            if (!rawJsonText) return;
-            try {
-                await navigator.clipboard.writeText(rawJsonText);
-                const btn = document.getElementById('copyBtn');
-                const originalText = btn.innerText;
-                btn.innerText = "✅ 복사 완료!";
-                btn.classList.add('success-bg');
-                setTimeout(() => {
-                    btn.innerText = originalText;
-                    btn.classList.remove('success-bg');
-                }, 2000);
-            } catch (err) { alert('복사 실패'); }
+        
+        async function copyToClipboard() { 
+            if (!rawJsonText) return; try { await navigator.clipboard.writeText(rawJsonText); const btn = document.getElementById('copyBtn'); const org = btn.innerText; btn.innerText = "✅ 복사 완료!"; btn.classList.add('success-bg'); setTimeout(() => { btn.innerText = org; btn.classList.remove('success-bg'); }, 2000); } catch (err) {}
+        }
+        function downloadJson() { 
+             if (!rawJsonText) return; const blob = new Blob([rawJsonText], { type: "application/json" }); const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = "mock_data.json"; link.click();
         }
 
-        function downloadJson() {
-            if (!rawJsonText) return;
-            const blob = new Blob([rawJsonText], { type: "application/json" });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = "mock_data.json";
-            link.click();
-        }
-        // ⏰ [Wake Up] 서버가 잠들지 않게 10분마다 찌르기
-        setInterval(() => {
-            console.log("⏰ Keeping the server awake...");
-            fetch('/health').catch(err => console.log("Wake up error:", err));
-        }, 10 * 60 * 1000);
+        setInterval(() => { fetch('/health').catch(e=>{}); }, 10 * 60 * 1000);
     </script>
 </body>
 </html>

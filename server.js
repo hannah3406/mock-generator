@@ -140,57 +140,46 @@ app.post('/api/parse', upload.single('specFile'), async (req, res) => {
 });
 
 // 🔒 AI 생성 API (개수 설정 기능 추가)
-app.post('/api/generate', rateLimiter, async (req, res) => {
-    // 1. count 파라미터 추가 (기본값 1)
+app.post('/api/generate', async (req, res) => {
     const { path, method, specSchema, count = 1 } = req.body;
-    
-    if (!path || !method || !specSchema) {
-        return res.status(400).json({ error: 'Missing required fields' });
-    }
     
     try {
         const safeSchema = sanitizeSchema(specSchema);
 
-        // 2. 프롬프트 강화: 개수(count)와 타입에 따른 생성 규칙 명시
+        // 🧠 스마트 프롬프트: 객체 내부 배열 처리 로직 추가
         const prompt = `
-You are a Mock Data Generator.
-Generate realistic Korean mock data based on the following JSON Schema.
+        You are a Mock Data Generator.
+        Generate realistic Korean mock data based on the following JSON Schema/Example.
+        
+        [Rules]
+        1. Output MUST be valid JSON.
+        2. No markdown formatting.
+        3. Use realistic Korean data (names, places, etc).
+        
+        [Count Logic - CRITICAL]
+        The user requested count is: ${count}
+        
+        CASE A: If the root schema is an 'Array':
+        - Generate a list with exactly ${count} items.
+        
+        CASE B: If the root schema is an 'Object':
+        - Generate exactly 1 root object.
+        - HOWEVER, for any fields inside this object that are 'Arrays' (lists), populate them with ${count} items each.
+          (e.g., 'couponList', 'benefitList' should have ${count} items).
 
-[Rules]
-1. Output MUST be valid JSON only.
-2. Do NOT include markdown formatting (no \`\`\`json).
-3. Use realistic Korean names/addresses/content.
-4. Follow the exact structure of the schema.
-5. [CRITICAL] Count & Type handling:
-   - If the schema root is an 'array', generate exactly ${count} item(s) in the list.
-   - If the schema root is an 'object', generate exactly 1 item (ignore count).
-
-Target: ${method.toUpperCase()} ${path}
-Schema: ${JSON.stringify(safeSchema)}
+        Target: ${method.toUpperCase()} ${path}
+        Schema: ${JSON.stringify(safeSchema)}
         `;
 
         const result = await model.generateContent(prompt);
         const responseText = result.response.text();
         
         const cleanText = responseText.replace(/```json\n?|\n?```/g, '').trim();
-        
-        let jsonData;
-        try {
-            jsonData = JSON.parse(cleanText);
-        } catch (parseErr) {
-            console.error('JSON parse error:', cleanText);
-            throw new Error('AI returned invalid JSON');
-        }
-        
-        res.json(jsonData);
+        res.json(JSON.parse(cleanText));
 
     } catch (err) {
-        console.error("AI Error:", err.message);
-        res.status(500).json({ 
-            error: process.env.NODE_ENV === 'production'
-                ? 'Failed to generate mock data.'
-                : `Generation failed: ${err.message}`
-        });
+        console.error("AI Error:", err);
+        res.status(500).json({ error: '생성 실패: ' + err.message });
     }
 });
 // 404 핸들러
